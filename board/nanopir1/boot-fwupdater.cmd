@@ -1,6 +1,6 @@
 setenv fdt_high ffffffff
 
-setenv bootargs console=ttyS0,115200 earlyprintk root=/dev/mmcblk1p2 rootwait ro no_console_suspend panic=10 quiet loglevel=1
+setenv bootargs console=ttyS0,115200 earlyprintk root=/dev/mmcblk0p2 rootwait ro no_console_suspend panic=10 quiet loglevel=1
 
 fatload mmc 0 $kernel_addr_r zImage
 fatload mmc 0 $ramdisk_addr_r uInitrd
