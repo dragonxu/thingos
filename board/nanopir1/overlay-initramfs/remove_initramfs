@@ -1,6 +1,3 @@
 #!/bin/sh
 
-if [ -f /boot/boot-normal.scr ]; then
-    mv /boot/boot.scr /boot/boot-fwupdater.scr
-    mv /boot/boot-normal.scr /boot/boot.scr
-fi
+sed -ri 's/initramfs_enabled=.*/initramfs_enabled=0' /boot/uEnv.txt
