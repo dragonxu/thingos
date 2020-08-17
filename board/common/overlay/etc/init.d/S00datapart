@@ -11,16 +11,23 @@ case "$1" in
         root_dev=$(cat /proc/cmdline | grep -oE 'root=[/a-z0-9]+' | cut -d '=' -f 2)
         if [[ "${root_dev}" =~ ^([/a-z0-9]+)(p[0-9])$ ]]; then  # e.g. /dev/mmcblk0p2
             disk_dev=${BASH_REMATCH[1]}
+            disk_dev_prefix=${disk_dev}p
             boot_dev=${disk_dev}p1
             data_dev=${disk_dev}p3
         elif [[ "${root_dev}" =~ ^([/a-z0-9]+)([0-9])$ ]]; then  # e.g. /dev/sdc2
             disk_dev=${BASH_REMATCH[1]}
+            disk_dev_prefix=${disk_dev}
             boot_dev=${disk_dev}1
             data_dev=${disk_dev}3
         else
             msg_fail "unknown (${root_dev})"
             exit 1
         fi
+
+        for ext in disk extra overlay; do
+            sed "s,"'${disk_dev_prefix}'",${disk_dev_prefix},g" /etc/fstab.${ext} > /tmp/fstab.${ext}
+        done
+
         msg_done "${disk_dev}"
 
         test -b ${data_dev} && exit 0
@@ -41,7 +48,7 @@ case "$1" in
         test $? == 0 && msg_done || msg_fail
 
         msg_begin "Mounting data partition"
-        mount -T /etc/fstab.disk /data && msg_done || msg_fail
+        mount -T /tmp/fstab.disk /data && msg_done || msg_fail
 
         msg_begin "Copying data skeleton"
         cp -pur /usr/share/dataskel/* /data
