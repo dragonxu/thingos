@@ -13,11 +13,13 @@ case "$1" in
             disk_dev=${BASH_REMATCH[1]}
             disk_dev_prefix=${disk_dev}p
             boot_dev=${disk_dev}p1
+            root_dev=${disk_dev}p2
             data_dev=${disk_dev}p3
         elif [[ "${root_dev}" =~ ^([/a-z0-9]+)([0-9])$ ]]; then  # e.g. /dev/sdc2
             disk_dev=${BASH_REMATCH[1]}
             disk_dev_prefix=${disk_dev}
             boot_dev=${disk_dev}1
+            root_dev=${disk_dev}2
             data_dev=${disk_dev}3
         else
             msg_fail "unknown (${root_dev})"
@@ -27,6 +29,15 @@ case "$1" in
         for ext in disk extra overlay; do
             sed "s,"'${disk_dev_prefix}'",${disk_dev_prefix},g" /etc/fstab.${ext} > /tmp/fstab.${ext}
         done
+
+        # Output disk info to /tmp/disk_info
+        {
+        echo "DISK_DEV=${disk_dev}"
+        echo "DISK_DEV_PREFIX=${disk_dev_prefix}"
+        echo "BOOT_DEV=${boot_dev}"
+        echo "ROOT_DEV=${root_dev}"
+        echo "DATA_DEV=${data_dev}"
+        } > /tmp/disk_info
 
         msg_done "${disk_dev}"
 
@@ -64,4 +75,3 @@ case "$1" in
         echo "Usage: $0 {start}"
         exit 1
 esac
-

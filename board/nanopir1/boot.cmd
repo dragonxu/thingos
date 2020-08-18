@@ -4,7 +4,7 @@ fatload mmc 0 ${ramdisk_addr_r} uInitrd
 fatload mmc 0 ${scriptaddr} uEnv.txt
 env import -t ${scriptaddr} ${filesize}
 
-setenv bootargs console=ttyS0,115200 earlyprintk root=${root_dev}p2 rootwait ro no_console_suspend
+setenv bootargs console=ttyS0,115200 earlyprintk root=${disk_dev}p2 rootwait ro no_console_suspend
 
 if test "${initramfs_enabled}" = "1"; then
     bootz ${kernel_addr_r} ${ramdisk_addr_r} ${fdt_addr_r}
