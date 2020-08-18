@@ -105,7 +105,7 @@ function cleanup_on_exit() {
 
 #### disk & partition devices ####
 
-source /tmp/disk_dev
+source /tmp/disk_info
 
 function reallocate_boot_part() {
     current_boot_info=$(fdisk --bytes -l -o device,start,end,size ${DISK_DEV} | grep "${BOOT_DEV}")
